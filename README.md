@@ -18,9 +18,16 @@ Example request:
     "text": "They ate the pizza with anchovies",
     "model":"en",
     "collapse_punctuation": 0,
-    "collapse_phrases": 0
+    "collapse_phrases": 1
 }
 ```
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `text` | string | text to be parsed |
+| `model` | string | identifier string for a model installed on the server |
+| `collapse_punctuation` | boolean | Merge punctuation onto the preceding token? |
+| `collapse_phrases` | boolean | Merge noun chunks and named entities into single tokens? |  
 
 Example response:
 
@@ -43,6 +50,17 @@ Example response:
 }
 ```
 
+| Name | Type | Description |
+| --- | --- | --- |
+| `arcs` | array | data to generate the arrows |
+| `dir` | string | direction of arrow (`"left"` or `"right"`) |
+| `start` | integer | offset of word the arrow starts **on** |
+| `end` | integer | offset of word the arrow ends **on** |
+| `label` | string | dependency label |
+| `words` | array | data to generate the words |
+| `tag` | string | part-of-speech tag |
+| `text` | string | token |
+
 ### `POST` `/ent/`
 
 Example request:
@@ -54,15 +72,26 @@ Example request:
 }
 ```
 
+| Name | Type | Description |
+| --- | --- | --- |
+| `text` | string | text to be parsed |
+| `model` | string | identifier string for a model installed on the server  |
+
 Example response:
 
 ```json
 [
     { "end": 20, "start": 5,  "type": "PERSON" },
-    { "end": 67,  "start": 61, "type": "ORG" },
+    { "end": 67, "start": 61, "type": "ORG" },
     { "end": 75, "start": 71, "type": "DATE" }
 ]
 ```
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `end` | integer | character offset the entity ends **after** |
+| `start` | integer | character offset the entity starts **on** |
+| `type` | string | entity type |
 
 ## [sense2vec server](sense2vec)
 
@@ -93,3 +122,11 @@ Example response:
     }
 ]
 ```
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `score` | float | similarity to query |
+| `key` | string | identifier string |
+| `text` | string | human-readable token |
+| `count` | integer | absolute frequency in training corpus |
+| `head` | string | head word in text |
