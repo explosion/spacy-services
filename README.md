@@ -8,7 +8,7 @@ This repository provides REST microservices for Explosion AI's [interactive demo
 
 A simple [Falcon](https://falconframework.org/) app for exposing a spaCy dependency parser and spaCy named entity recognition model as a REST microservice, formatted for the [displaCy.js](https://github.com/explosion/displacy) and [displaCy ENT](https://github.com/explosion/displacy-ent) visualiser. For more info on the rendering on the front-end that consumes the data produced by this service, see [this blog post](https://explosion.ai/blog/displacy-js-nlp-visualizer).
 
-The service exposes two endpoints that accept POST requests.
+The service exposes two endpoints that accept POST requests, and two endpoints that accept GET requests to describe the available models and schemas.
 
 ---
 
@@ -100,16 +100,6 @@ Example response:
 
 ---
 
-### `GET` `/schema/`
-
-Example query:
-
-```
-GET /
-```
-
----
-
 ## [sense2vec server](sense2vec)
 
 A simple [Falcon](https://falconframework.org/) app for exposing a sense2vec model as a REST microservice, as used in the [sense2vec demo](https://github.com/explosion/sense2vec-demo)
@@ -147,3 +137,45 @@ Example response:
 | `text` | string | human-readable token |
 | `count` | integer | absolute frequency in training corpus |
 | `head` | string | head word in text |
+
+---
+
+### `GET` `/models`
+
+Example request:
+
+```/models```
+
+List the names of models installed on the server.
+
+
+Example response:
+
+```json
+["en", "de"]
+```
+
+---
+
+### `GET` `/{model_name}/schema/`
+
+
+Example request:
+
+
+```/en/schema```
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `model` | string | identifier string for a model installed on the server |
+
+
+Example response:
+
+```json
+{
+  "dep_types": ["ROOT", "nsubj"],
+  "ent_types", ["PERSON", "LOC", "ORG"],,
+  "pos_types": ["NN", "VBZ", "SP"]}
+}
+```
