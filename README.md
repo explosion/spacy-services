@@ -117,7 +117,7 @@ Example response:
 
 ---
 
-### `GET` `/{model_name}/schema/`
+### `GET` `/{model}/schema/`
 
 
 Example request:
