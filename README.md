@@ -1,18 +1,21 @@
 <a href="https://explosion.ai"><img src="https://explosion.ai/assets/img/logo.svg" width="125" height="125" align="right" /></a>
 
-# spaCy services
+# spaCy REST services
 
-This repository provides REST microservices for Explosion AI's [interactive demos](https://demos.explosion.ai) and visualisers.
+This repository provides REST microservices for Explosion AI's [interactive demos](https://demos.explosion.ai) and visualisers. All requests and responses are JSON-encoded as `text/string`, so all requests require the header `Content-Type: text/string`.
 
 ## [displaCy server](displacy)
 
-A simple [Falcon](https://falconframework.org/) app for exposing a spaCy dependency parser and spaCy named entity recognition model as a REST microservice, formatted for the [displaCy.js](https://github.com/explosion/displacy) and [displaCy ENT](https://github.com/explosion/displacy-ent) visualiser.
+A simple [Falcon](https://falconframework.org/) app for exposing a spaCy dependency parser and spaCy named entity recognition model as a REST microservice, formatted for the [displaCy.js](https://github.com/explosion/displacy) and [displaCy ENT](https://github.com/explosion/displacy-ent) visualiser. For more info on the rendering on the front-end that consumes the data produced by this service, see [this blog post](https://explosion.ai/blog/displacy-js-nlp-visualizer).
 
 The service exposes two endpoints that accept POST requests.
+
+---
 
 ### `POST` `/dep/`
 
 Example request:
+
 ```json
 {
     "text": "They ate the pizza with anchovies",
@@ -61,6 +64,8 @@ Example response:
 | `tag` | string | part-of-speech tag |
 | `text` | string | token |
 
+---
+
 ### `POST` `/ent/`
 
 Example request:
@@ -93,15 +98,27 @@ Example response:
 | `start` | integer | character offset the entity starts **on** |
 | `type` | string | entity type |
 
+---
+
+### `GET` `/schema/`
+
+Example query:
+
+```
+GET /
+```
+
+---
+
 ## [sense2vec server](sense2vec)
 
 A simple [Falcon](https://falconframework.org/) app for exposing a sense2vec model as a REST microservice, as used in the [sense2vec demo](https://github.com/explosion/sense2vec-demo)
 
-The service exposes a single endpoint over GET:
+The service exposes a single endpoint over GET.
 
-```
-GET /{word|POS}
-```
+---
+
+### `GET` `/{word|POS}`
 
 Example query:
 
