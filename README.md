@@ -100,46 +100,6 @@ Example response:
 
 ---
 
-## [sense2vec server](sense2vec)
-
-A simple [Falcon](https://falconframework.org/) app for exposing a sense2vec model as a REST microservice, as used in the [sense2vec demo](https://github.com/explosion/sense2vec-demo)
-
-The service exposes a single endpoint over GET.
-
----
-
-### `GET` `/{word|POS}`
-
-Example query:
-
-```
-GET /natural_language_processing%7CNOUN
-```
-
-Example response:
-
-```json
-[
-    {
-        "score": 0.1,
-        "key": "computational_linguistics|NOUN",
-        "text": "computational linguistics",
-        "count": 20,
-        "head": "linguistics"
-    }
-]
-```
-
-| Name | Type | Description |
-| --- | --- | --- |
-| `score` | float | similarity to query |
-| `key` | string | identifier string |
-| `text` | string | human-readable token |
-| `count` | integer | absolute frequency in training corpus |
-| `head` | string | head word in text |
-
----
-
 ### `GET` `/models`
 
 Example request:
@@ -179,3 +139,43 @@ Example response:
   "pos_types": ["NN", "VBZ", "SP"]}
 }
 ```
+
+---
+
+## [sense2vec server](sense2vec)
+
+A simple [Falcon](https://falconframework.org/) app for exposing a sense2vec model as a REST microservice, as used in the [sense2vec demo](https://github.com/explosion/sense2vec-demo)
+
+The service exposes a single endpoint over GET.
+
+---
+
+### `GET` `/{word|POS}`
+
+Example query:
+
+```
+GET /natural_language_processing%7CNOUN
+```
+
+Example response:
+
+```json
+[
+    {
+        "score": 0.1,
+        "key": "computational_linguistics|NOUN",
+        "text": "computational linguistics",
+        "count": 20,
+        "head": "linguistics"
+    }
+]
+```
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `score` | float | similarity to query |
+| `key` | string | identifier string |
+| `text` | string | human-readable token |
+| `count` | integer | absolute frequency in training corpus |
+| `head` | string | head word in text |
