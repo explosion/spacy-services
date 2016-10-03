@@ -1,0 +1,4 @@
+falcon
+spacy==0.101.0
+pytest
+gunicorn
