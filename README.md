@@ -10,7 +10,7 @@ A simple [Falcon](https://falconframework.org/) app for exposing a spaCy depende
 
 The service exposes two endpoints that accept POST requests.
 
-### `POST /dep/`
+### `POST` `/dep/`
 
 Example request:
 ```json
@@ -26,14 +26,14 @@ Example response:
 
 ```json
 {
-    arcs: [
+    "arcs": [
         { "dir": "left", "start": 0, "end": 1, "label": "nsubj" },
         { "dir": "right", "start": 1, "end": 2, "label": "dobj" },
         { "dir": "right", "start": 1, "end": 3, "label": "prep" },
         { "dir": "right", "start": 3, "end": 4, "label": "pobj" },
         { "dir": "left", "start": 2, "end": 3, "label": "prep" }
     ],
-    words: [
+    "words": [
         { "tag": "PRP", "text": "They" },
         { "tag": "VBD", "text": "ate" },
         { "tag": "NN", "text": "the pizza" },
@@ -43,7 +43,7 @@ Example response:
 }
 ```
 
-### `POST /ent/`
+### `POST` `/ent/`
 
 Example request:
 
