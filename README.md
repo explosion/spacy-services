@@ -102,12 +102,13 @@ Example response:
 
 ### `GET` `/models`
 
-Example request:
-
-```/models```
-
 List the names of models installed on the server.
 
+Example request:
+
+```
+GET /models
+```
 
 Example response:
 
@@ -119,24 +120,23 @@ Example response:
 
 ### `GET` `/{model}/schema/`
 
-
 Example request:
 
-
-```/en/schema```
+```
+GET /en/schema
+```
 
 | Name | Type | Description |
 | --- | --- | --- |
 | `model` | string | identifier string for a model installed on the server |
-
 
 Example response:
 
 ```json
 {
   "dep_types": ["ROOT", "nsubj"],
-  "ent_types", ["PERSON", "LOC", "ORG"],,
-  "pos_types": ["NN", "VBZ", "SP"]}
+  "ent_types": ["PERSON", "LOC", "ORG"],
+  "pos_types": ["NN", "VBZ", "SP"]
 }
 ```
 
