@@ -2,17 +2,30 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 
+from pathlib import Path
 import falcon
 import spacy
 import json
+
+from spacy.symbols import ENT_TYPE, TAG, DEP
+
+import spacy.util
 
 from .parse import Parse, Entities
 
 
 try:
-  unicode
+    MODELS = spacy.util.LANGUAGES.keys()
 except NameError:
-  unicode = str
+    # Support older spaCy versions, pre 0.100.0
+    data_dir = Path(spacy.util.__file__).parent / 'data'
+    MODELS = [d for d in data_dir.iterdir() if d.is_dir()]
+
+
+try:
+    unicode
+except NameError:
+    unicode = str
 
 
 _models = {}
@@ -24,12 +37,68 @@ def get_model(model_name):
     return _models[model_name]
 
 
-class ParseServer(object):
+def get_dep_types(model):
+    '''List the available dep labels in the model.'''
+    labels = []
+    for label_id in model.parser.moves.freqs[DEP]:
+        labels.append(model.vocab.strings[label_id])
+    return labels
+
+
+def get_ent_types(model):
+    '''List the available entity types in the model.'''
+    labels = []
+    for label_id in model.parser.moves.freqs[ENT_TYPE]:
+        labels.append(model.vocab.strings[label_id])
+    return labels
+
+
+def get_pos_types(model):
+    '''List the available part-of-speech tags in the model.'''
+    labels = []
+    for label_id in model.parser.moves.freqs[TAG]:
+        labels.append(model.vocab.strings[label_id])
+    return labels
+
+
+class ModelsResource(object):
+    """List the available models."""
+    def on_get(self, req, resp):
+        try:
+            output = list(MODELS)
+            resp.body = json.dumps(output.to_json(), sort_keys=True, indent=2)
+            resp.content_type = b'text/string'
+            resp.append_header(b'Access-Control-Allow-Origin', b"*")
+            resp.status = falcon.HTTP_200
+        except Exception:
+            resp.status = falcon.HTTP_500
+
+
+class SchemaResource(object):
+    """Describe the annotation scheme of a model."""
+    def on_get(self, req, resp, model_name):
+        try:
+            model = get_model(model_name)
+            output = {
+                'dep_types': get_dep_types(model),
+                'ent_types': get_ent_types(model),
+                'pos_types': get_pos_types(model)
+            }
+
+            resp.body = json.dumps(output.to_json(), sort_keys=True, indent=2)
+            resp.content_type = b'text/string'
+            resp.append_header(b'Access-Control-Allow-Origin', b"*")
+            resp.status = falcon.HTTP_200
+        except Exception:
+            resp.status = falcon.HTTP_500
+
+
+class DepResource(object):
+    """Parse text and return displacy's expected JSON output."""
     def on_post(self, req, resp):
-        """Handles POST requests"""
         req_body = req.stream.read()
         json_data = json.loads(req_body.decode('utf8'))
-        text = json_data.get('text', 'displaCyEX is the new displaCy.')
+        text = json_data.get('text')
         model_name = json_data.get('model', 'en')
         collapse_punctuation = json_data.get('collapse_punctuation', True)
         collapse_phrases = json_data.get('collapse_phrases', True)
@@ -41,16 +110,16 @@ class ParseServer(object):
             resp.content_type = b'text/string'
             resp.append_header(b'Access-Control-Allow-Origin', b"*")
             resp.status = falcon.HTTP_200
-        except:
+        except Exception:
             resp.status = falcon.HTTP_500
 
 
-class EntityServer(object):
+class EntResource(object):
+    """Parse text and return displaCy ent's expected output."""
     def on_post(self, req, resp):
-        """Handles POST requests"""
         req_body = req.stream.read()
         json_data = json.loads(req_body.decode('utf8'))
-        text = json_data.get('text', 'displaCyEX is the new displaCy.')
+        text = json_data.get('text')
         model_name = json_data.get('model', 'en')
         try:
             model = get_model(model_name)
@@ -59,12 +128,12 @@ class EntityServer(object):
             resp.content_type = b'text/string'
             resp.append_header(b'Access-Control-Allow-Origin', b"*")
             resp.status = falcon.HTTP_200
-        except:
+        except Exception:
             resp.status = falcon.HTTP_500
 
 
 APP = falcon.API()
-parse_server = ParseServer()
-ner_server = EntityServer()
-APP.add_route('/dep', parse_server)
-APP.add_route('/ent', ner_server)
+APP.add_route('/dep', DepResource())
+APP.add_route('/ent', EntResource())
+APP.add_route('/{model_name}/schema', SchemaResource())
+APP.add_route('/models', ModelsResource())
