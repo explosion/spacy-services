@@ -100,6 +100,44 @@ Example response:
 
 ---
 
+### `POST` `/train/ent`
+
+Example request:
+
+```json
+{
+    "text": "Google es una empresa.",
+    "model": "es",
+    "tags": [
+      {
+        "start": 0,
+        "len": 6,
+        "type": "ORG"
+      }
+    ]
+}
+```
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `text` | string | text to be parsed |
+| `tags` | array | entities to be used for training named entity recognition |
+| `model` | string | identifier string for a model installed on the server  |
+
+Example response:
+
+```json
+[
+    { "end": 6, "start": 0,  "type": "ORG" }
+]
+```
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `end` | integer | character offset the entity ends **after** |
+| `start` | integer | character offset the entity starts **on** |
+| `type` | string | entity type |
+
 ### `GET` `/models`
 
 List the names of models installed on the server.
