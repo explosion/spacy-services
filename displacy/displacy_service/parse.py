@@ -1,5 +1,8 @@
 from __future__ import unicode_literals
 
+from spacy.gold import GoldParse
+from spacy.pipeline import EntityRecognizer
+
 
 class Parse(object):
     def __init__(self, nlp, text, collapse_punctuation, collapse_phrases):
@@ -53,6 +56,27 @@ class Entities(object):
     def __init__(self, nlp, text):
         self.doc = nlp(text)
      
+    def to_json(self):
+        return [{'start': ent.start_char, 'end': ent.end_char, 'type': ent.label_}
+                for ent in self.doc.ents]
+
+
+class TrainEntities(object):
+    def __init__(self, nlp, text, tags):
+        ner = EntityRecognizer(nlp.vocab, entity_types=['PERSON', 'NORP', 'FACILITY', 'ORG', 'GPE', 'LOC', 'PRODUCT',
+                                                        'EVENT', 'WORK_OF_ART', 'LANGUAGE', 'DATE', 'TIME', 'PERCENT',
+                                                        'MONEY', 'QUANTITY', 'ORDINAL', 'CARDINAL'])
+        entities = [(tag['start'], tag['start'] + tag['len'], tag['type'])
+                    for tag in tags]
+        for itn in range(10):
+            doc = nlp.make_doc(text)
+            gold = GoldParse(doc, entities=entities)
+            ner.update(doc, gold)
+        ner.model.end_training()
+        doc = nlp(text)
+        ner(doc)
+        self.doc = doc
+
     def to_json(self):
         return [{'start': ent.start_char, 'end': ent.end_char, 'type': ent.label_}
                 for ent in self.doc.ents]
