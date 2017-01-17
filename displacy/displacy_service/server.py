@@ -7,6 +7,7 @@ import falcon
 import spacy
 import json
 
+from spacy.pipeline import EntityRecognizer
 from spacy.symbols import ENT_TYPE, TAG, DEP
 
 import spacy.util
@@ -37,8 +38,15 @@ def get_model(model_name):
         model = spacy.load(model_name)
         if model.tagger is None:
             model.tagger = Tagger(model.vocab, features=Tagger.feature_templates)
+        if model.entity is None:
+            model.entity = EntityRecognizer(model.vocab, entity_types=['PERSON', 'NORP', 'FACILITY', 'ORG', 'GPE',
+                                                                       'LOC', 'PRODUCT', 'EVENT', 'WORK_OF_ART',
+                                                                       'LANGUAGE', 'DATE', 'TIME', 'PERCENT',
+                                                                       'MONEY', 'QUANTITY', 'ORDINAL', 'CARDINAL'])
+        model.pipeline = [model.tagger, model.entity, model.parser]
         _models[model_name] = model
     return _models[model_name]
+
 
 def get_dep_types(model):
     '''List the available dep labels in the model.'''

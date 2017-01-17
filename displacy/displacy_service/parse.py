@@ -63,9 +63,7 @@ class Entities(object):
 
 class TrainEntities(object):
     def __init__(self, nlp, text, tags):
-        ner = EntityRecognizer(nlp.vocab, entity_types=['PERSON', 'NORP', 'FACILITY', 'ORG', 'GPE', 'LOC', 'PRODUCT',
-                                                        'EVENT', 'WORK_OF_ART', 'LANGUAGE', 'DATE', 'TIME', 'PERCENT',
-                                                        'MONEY', 'QUANTITY', 'ORDINAL', 'CARDINAL'])
+        ner = nlp.entity
         entities = [(tag['start'], tag['start'] + tag['len'], tag['type'])
                     for tag in tags]
         for itn in range(10):

@@ -35,3 +35,16 @@ def test_train_ents():
                          "tags": [{"start": 0, "len": 6, "type": "ORG"}]}''')
     ents = json.loads(result.text)
     assert ents == [{"start": 0, "end": len("Google"), "type": "ORG"}]
+
+
+def test_train_and_query_ents():
+    test_api = TestAPI()
+    result = test_api.simulate_post(path='/train/ent',
+                body='''{"text": "Google es una empresa.", "model": "es",
+                         "tags": [{"start": 0, "len": 6, "type": "ORG"}]}''')
+    ents = json.loads(result.text)
+    assert ents == [{"start": 0, "end": len("Google"), "type": "ORG"}]
+    result = test_api.simulate_post(path='/ent',
+                body='''{"text": "Google es una empresa.", "model": "es"}''')
+    ents = json.loads(result.text)
+    assert ents == [{"start": 0, "end": len("Google"), "type": "ORG"}]
