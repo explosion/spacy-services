@@ -66,6 +66,14 @@ Example response:
 
 ---
 
+Curl command:
+
+```
+curl -s localhost:8000/dep -d '{"text":"Pastafarians are smarter than people with Coca Cola bottles.", "model":"en"}'
+```
+
+
+
 ### `POST` `/ent/`
 
 Example request:
@@ -99,6 +107,10 @@ Example response:
 | `type` | string | entity type |
 
 ---
+
+```
+curl -s localhost:8000/ent -d '{"text":"Pastafarians are smarter than people with Coca Cola bottles.", "model":"en"}'
+```
 
 ### `GET` `/models`
 

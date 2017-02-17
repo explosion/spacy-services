@@ -123,7 +123,10 @@ class DepResource(object):
             resp.content_type = 'text/string'
             resp.append_header('Access-Control-Allow-Origin', "*")
             resp.status = falcon.HTTP_200
-        except Exception:
+        except Exception as e:
+            raise falcon.HTTPBadRequest(
+                'Dependency parsing failed',
+                '{}'.format(e))
             resp.status = falcon.HTTP_500
 
 

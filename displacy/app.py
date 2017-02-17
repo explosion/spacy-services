@@ -1,8 +1,8 @@
 from displacy_service.server import APP, get_model
 
-# Pre-load English and German models
+# Pre-load English model only, to save memory
 get_model('en')
-get_model('de')
+# get_model('de')
 
 
 if __name__ == '__main__':
