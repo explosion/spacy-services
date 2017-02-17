@@ -1,4 +1,4 @@
-from displacy.server import APP, get_model
+from displacy_service.server import APP, get_model
 
 # Pre-load English and German models
 get_model('en')
