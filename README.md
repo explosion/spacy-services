@@ -66,6 +66,86 @@ Example response:
 
 ---
 
+Curl command:
+
+```
+curl -s localhost:8000/dep -d '{"text":"Pastafarians are smarter than people with Coca Cola bottles.", "model":"en"}'
+```
+
+```json
+{
+  "arcs": [
+    {
+      "dir": "left",
+      "end": 1,
+      "label": "nsubj",
+      "start": 0
+    },
+    {
+      "dir": "right",
+      "end": 2,
+      "label": "acomp",
+      "start": 1
+    },
+    {
+      "dir": "right",
+      "end": 3,
+      "label": "prep",
+      "start": 2
+    },
+    {
+      "dir": "right",
+      "end": 4,
+      "label": "pobj",
+      "start": 3
+    },
+    {
+      "dir": "right",
+      "end": 5,
+      "label": "prep",
+      "start": 4
+    },
+    {
+      "dir": "right",
+      "end": 6,
+      "label": "pobj",
+      "start": 5
+    }
+  ],
+  "words": [
+    {
+      "tag": "NNPS",
+      "text": "Pastafarians"
+    },
+    {
+      "tag": "VBP",
+      "text": "are"
+    },
+    {
+      "tag": "JJR",
+      "text": "smarter"
+    },
+    {
+      "tag": "IN",
+      "text": "than"
+    },
+    {
+      "tag": "NNS",
+      "text": "people"
+    },
+    {
+      "tag": "IN",
+      "text": "with"
+    },
+    {
+      "tag": "NNS",
+      "text": "Coca Cola bottles."
+    }
+  ]
+}
+```
+
+
 ### `POST` `/ent/`
 
 Example request:
@@ -97,6 +177,28 @@ Example response:
 | `end` | integer | character offset the entity ends **after** |
 | `start` | integer | character offset the entity starts **on** |
 | `type` | string | entity type |
+
+
+
+```
+curl -s localhost:8000/ent -d '{"text":"Pastafarians are smarter than people with Coca Cola bottles.", "model":"en"}'
+```
+
+```json
+[
+  {
+    "end": 12,
+    "start": 0,
+    "type": "NORP"
+  },
+  {
+    "end": 51,
+    "start": 42,
+    "type": "ORG"
+  }
+]
+```
+
 
 ---
 
