@@ -32,6 +32,17 @@ Example request:
 | `collapse_punctuation` | boolean | Merge punctuation onto the preceding token? |
 | `collapse_phrases` | boolean | Merge noun chunks and named entities into single tokens? |  
 
+
+Example request using python requests libraray
+```
+url = "http://localhost:8000/dep"
+message_text = "They ate the pizza with anchovies"
+headers = {'content-type': 'application/json'}
+d = {"text": message_text, "model":"en"}
+
+response = requests.post(url, data=json.dumps(d), headers=headers)
+r = response.json()
+```
 Example response:
 
 ```json
@@ -161,6 +172,17 @@ Example request:
 | --- | --- | --- |
 | `text` | string | text to be parsed |
 | `model` | string | identifier string for a model installed on the server  |
+
+Example request using python requests library
+```
+url = "http://localhost:8000/ent"
+message_text = "When Sebastian Thrun started working on self-driving cars at Google in 2007, few people outside of the company took him seriously."
+headers = {'content-type': 'application/json'}
+d = {"text": message_text, "model":"en"}
+
+response = requests.post(url, data=json.dumps(d), headers=headers)
+r = response.json()
+```
 
 Example response:
 
