@@ -42,7 +42,7 @@ import requests
 url = "http://localhost:8000/dep"
 message_text = "They ate the pizza with anchovies"
 headers = {'content-type': 'application/json'}
-d = {"text": message_text, "model":"en"}
+d = {'text': message_text, 'model': 'en'}
 
 response = requests.post(url, data=json.dumps(d), headers=headers)
 r = response.json()
@@ -187,7 +187,7 @@ import requests
 url = "http://localhost:8000/ent"
 message_text = "When Sebastian Thrun started working on self-driving cars at Google in 2007, few people outside of the company took him seriously."
 headers = {'content-type': 'application/json'}
-d = {"text": message_text, "model":"en"}
+d = {'text': message_text, 'model': 'en'}
 
 response = requests.post(url, data=json.dumps(d), headers=headers)
 r = response.json()
