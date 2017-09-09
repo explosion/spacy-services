@@ -12,7 +12,7 @@ from spacy.symbols import ENT_TYPE, TAG, DEP
 import spacy.util
 
 from .parse import Parse, Entities
-
+from .annotate import Annotations
 
 try:
     MODELS = spacy.util.LANGUAGES.keys()
@@ -31,9 +31,16 @@ except NameError:
 _models = {}
 
 
-def get_model(model_name):
-    if model_name not in _models:
-        _models[model_name] = spacy.load(model_name)
+def get_model(model_name, modeldir=None, test=False):
+    if test==False:
+        if modeldir == None:
+            if model_name not in _models:
+                _models[model_name] = spacy.load(model_name)
+        else:
+            _models[model_name] = spacy.load(model_name,path=Path(modeldir))
+    else:
+        import model_name
+        _models[model_name] = model_name.load()
     return _models[model_name]
 
 
@@ -112,7 +119,7 @@ class DepResource(object):
         req_body = req.stream.read()
         json_data = json.loads(req_body.decode('utf8'))
         text = json_data.get('text')
-        model_name = json_data.get('model', 'en')
+        model_name = json_data.get('model', 'fr')
         collapse_punctuation = json_data.get('collapse_punctuation', True)
         collapse_phrases = json_data.get('collapse_phrases', True)
 
@@ -134,6 +141,7 @@ class EntResource(object):
     """Parse text and return displaCy ent's expected output."""
     def on_post(self, req, resp):
         req_body = req.stream.read()
+        print(req_body)
         json_data = json.loads(req_body.decode('utf8'))
         text = json_data.get('text')
         model_name = json_data.get('model', 'en')
@@ -148,9 +156,28 @@ class EntResource(object):
         except Exception:
             resp.status = falcon.HTTP_500
 
+class AnnotResource(object):
+    """Parse text and return style annotations's expected output."""
+    def on_post(self, req, resp):
+        req_body = req.stream.read()
+        json_data = json.loads(req_body.decode('utf8'))
+        text = json_data.get('text')
+        model_name = json_data.get('model', 'fr')
+        try:
+            model = get_model(model_name)
+            annotations = Annotations(model, text)
+            #print(annotations)
+            resp.body = json.dumps(annotations.to_json(), sort_keys=True,
+                                   indent=2)
+            resp.content_type = 'text/string'
+            resp.append_header('Access-Control-Allow-Origin', "*")
+            resp.status = falcon.HTTP_200
+        except Exception:
+            resp.status = falcon.HTTP_500
 
 APP = falcon.API()
-APP.add_route('/dep', DepResource())
-APP.add_route('/ent', EntResource())
-APP.add_route('/{model_name}/schema', SchemaResource())
-APP.add_route('/models', ModelsResource())
+#APP.add_route('/dep', DepResource())
+#APP.add_route('/ent', EntResource())
+#APP.add_route('/{model_name}/schema', SchemaResource())
+#APP.add_route('/models', ModelsResource())
+APP.add_route('/annot', AnnotResource())
