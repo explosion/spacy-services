@@ -1,4 +1,0 @@
-spacy>=0.101.0,<0.102.0
-sense2vec>=0.6.0,<0.7.0
-falcon
-falcon_cors
