@@ -4,6 +4,16 @@
 
 This repository provides REST microservices for Explosion AI's [interactive demos](https://demos.explosion.ai) and visualisers. All requests and responses are JSON-encoded as `text/string`, so all requests require the header `Content-Type: text/string`.
 
+# Docker Packaging
+
+This fork provides a Dockerfile that brings up a displaCy server (as documented below) using spaCy 1.9.0. To build and run locally,
+
+```docker build -t $YOUR_TAG .```
+
+```docker run -p 8000:8000 $YOUR_TAG```
+
+This will start a displaCy server running on localhost:8000.
+
 ## [displaCy server](displacy)
 
 A simple [Falcon](https://falconframework.org/) app for exposing a spaCy dependency parser and spaCy named entity recognition model as a REST microservice, formatted for the [displaCy.js](https://github.com/explosion/displacy) and [displaCy ENT](https://github.com/explosion/displacy-ent) visualiser. For more info on the rendering on the front-end that consumes the data produced by this service, see [this blog post](https://explosion.ai/blog/displacy-js-nlp-visualizer).
