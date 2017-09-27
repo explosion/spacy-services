@@ -1,4 +1,4 @@
 falcon
-spacy==0.101.0
+spacy==1.9.0
 pytest
 gunicorn
