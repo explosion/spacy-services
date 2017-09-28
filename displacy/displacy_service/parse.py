@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 
-
 class Parse(object):
     def __init__(self, nlp, text, collapse_punctuation, collapse_phrases):
         self.doc = nlp(text)
@@ -26,8 +25,18 @@ class Parse(object):
             for np in list(self.doc.noun_chunks):
                 np.merge(np.root.tag_, np.root.lemma_, np.root.ent_type_)
 
+    # de-numpy this vector
+    def serialize_vector(self, vector):
+        return [float(i) for i in vector]
+
     def to_json(self):
-        words = [{'text': w.text, 'tag': w.tag_} for w in self.doc]
+        words = [{'text': w.text, 'tag': w.tag_, 
+                'orth': w.orth_, 'pos': w.pos_,
+                'ent_type': w.ent_type_, 'shape': w.shape_,
+                'lemma': w.lemma_, 'sentiment': w.sentiment,
+                'like_num': w.like_num, 'like_email': w.like_email,
+                'dep': w.dep_, 'vector': self.serialize_vector(w.vector)
+                } for w in self.doc]
         arcs = []
         for word in self.doc:
             if word.i < word.head.i:
