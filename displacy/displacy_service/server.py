@@ -14,13 +14,7 @@ import spacy.util
 from .parse import Parse, Entities
 
 
-try:
-    MODELS = spacy.util.LANGUAGES.keys()
-except NameError:
-    # Support older spaCy versions, pre 0.100.0
-    data_dir = Path(spacy.util.__file__).parent / 'data'
-    MODELS = [d for d in data_dir.iterdir() if d.is_dir()]
-
+MODELS = spacy.util.LANGUAGES.keys()
 
 try:
     unicode
@@ -39,25 +33,25 @@ def get_model(model_name):
 
 def get_dep_types(model):
     '''List the available dep labels in the model.'''
-    labels = []
-    for label_id in model.parser.moves.freqs[DEP]:
-        labels.append(model.vocab.strings[label_id])
-    return labels
+    labels = set()
+    for move_name in model.parser.moves.move_names:
+        labels.add(move_name.split('-')[-1])
+    return sorted(list(labels))
 
 
 def get_ent_types(model):
     '''List the available entity types in the model.'''
-    labels = []
-    for label_id in model.entity.moves.freqs[ENT_TYPE]:
-        labels.append(model.vocab.strings[label_id])
-    return labels
+    labels = set()
+    for move_name in model.parser.moves.move_names:
+        labels.add(move_name.split('-')[-1])
+    return sorted(list(labels))
 
 
 def get_pos_types(model):
     '''List the available part-of-speech tags in the model.'''
     labels = []
-    for label_id in model.tagger.moves.freqs[TAG]:
-        labels.append(model.vocab.strings[label_id])
+    for label in model.tagger.labels:
+        labels.append(label)
     return labels
 
 

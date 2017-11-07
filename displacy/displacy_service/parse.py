@@ -17,14 +17,15 @@ class Parse(object):
                     end += 1
                 span = self.doc[start : end]
                 spans.append(
-                    (span.start_char, span.end_char, word.tag_, word.lemma_, word.ent_type_)
+                    (span.start_char, span.end_char,
+                     {'tag': word.tag_, 'lemma': word.lemma_, 'ent_type': word.ent_type_})
                 )
-            for span_props in spans:
-                self.doc.merge(*span_props)
+            for start, end, attrs in spans:
+                self.doc.merge(start, end, **attrs)
 
         if collapse_phrases:
             for np in list(self.doc.noun_chunks):
-                np.merge(np.root.tag_, np.root.lemma_, np.root.ent_type_)
+                np.merge(tag=np.root.tag_, lemma=np.root.lemma_, ent_type=np.root.ent_type_)
 
     def to_json(self):
         words = [{'text': w.text, 'tag': w.tag_} for w in self.doc]

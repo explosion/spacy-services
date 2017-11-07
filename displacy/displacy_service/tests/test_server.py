@@ -13,7 +13,7 @@ class TestAPI(falcon.testing.TestCase):
 def test_deps():
     test_api = TestAPI()
     result = test_api.simulate_post(path='/dep',
-                body='''{"text": "This is a test.", "model": "en",
+                body='''{"text": "This is a test.", "model": "en_core_web_sm",
                          "collapse_punctuation": false, "collapse_phrases": false}''')
     result = json.loads(result.text)
     words = [w['text'] for w in result['words']]
@@ -23,6 +23,6 @@ def test_deps():
 def test_ents():
     test_api = TestAPI()
     result = test_api.simulate_post(path='/ent',
-                body='''{"text": "Google is a company.", "model": "en"}''')
+                body='''{"text": "Google is a company.", "model": "en_core_web_sm"}''')
     ents = json.loads(result.text)
     assert ents == [{"start": 0, "end": len("Google"), "type": "ORG"}]
