@@ -24,16 +24,24 @@ class SimilarityService(object):
             sense2vec.load())
 
     def on_get(self, req, resp, query=''):
-        return json.dumps(self.handler(unquote(query)))
+        print("Req", req, query)
+        query = unquote(query)
+        print("Get result for", query)
+        result = self.handler(query)
+        print("Returning", result)
+        resp.body = json.dumps(result)
 
 
 def load():
     '''Load the sense2vec model, and return a falcon API object that exposes
     the SimilarityService.
     '''
-    cors = CORS(allow_all_origins=True, allow_all_methods=True, allow_all_headers=True)
+    print("Loading")
+    cors = CORS(allow_all_origins=True, allow_all_methods=True, allow_all_headers=True,
+		allow_credentials_all_origins=True)
     app = falcon.API(middleware=[cors.middleware])
     app.add_route('/{query}', SimilarityService())
+    print("Loaded!")
     return app
 
 
