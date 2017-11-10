@@ -14,6 +14,12 @@ This fork provides a Dockerfile that brings up a displaCy server (as documented 
 
 This will start a displaCy server running on localhost:8000.
 
+#### Running tests
+
+```docker run -p 8000:8000 --rm -it $YOUR_TAG pytest displacy_service/tests```
+
+This will run the displacy service tests defined in this repo
+
 ## [displaCy server](displacy)
 
 A simple [Falcon](https://falconframework.org/) app for exposing a spaCy dependency parser and spaCy named entity recognition model as a REST microservice, formatted for the [displaCy.js](https://github.com/explosion/displacy) and [displaCy ENT](https://github.com/explosion/displacy-ent) visualiser. For more info on the rendering on the front-end that consumes the data produced by this service, see [this blog post](https://explosion.ai/blog/displacy-js-nlp-visualizer).
