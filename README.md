@@ -88,7 +88,7 @@ et voila: we only get back the features we want!
 ```python
 import json, requests, spacy
 
-convience = lambda x: {'text': x if isinstance(x, list) else [x], 'model': 'en'}
+convenience = lambda x: {'text': x if isinstance(x, list) else [x], 'model': 'en'}
 
 url = "http://localhost:8000/dep"
 
