@@ -108,8 +108,20 @@ class DepResource(object):
 
     test with: curl -s localhost:8000/dep -d '{"text":"Pastafarians are smarter than people with Coca Cola bottles."}'
     """
+
+    @staticmethod
+    def pred(key, valid_keys):
+        return valid_keys is None or key in valid_keys
+
+    def dep_text(self, text, model, collapse_punctuation, collapse_phrases, **params):
+        parse = Parse(model, text, collapse_punctuation, collapse_phrases).to_json()
+        arcs = parse['arcs']
+        words = [{k:v for k,v in word.items() if self.pred(k, params.get('features', None))} for word in parse['words']]
+        return {'arcs': arcs, 'words': words}
+
     def on_post(self, req, resp):
         req_body = req.stream.read()
+        params = req.params
         json_data = json.loads(req_body.decode('utf8'))
         text = json_data.get('text')
         model_name = json_data.get('model', 'en')
@@ -118,8 +130,8 @@ class DepResource(object):
 
         try:
             model = get_model(model_name)
-            parse = Parse(model, text, collapse_punctuation, collapse_phrases)
-            resp.body = json.dumps(parse.to_json(), sort_keys=True, indent=2)
+            parse = {t: self.dep_text(t, model, collapse_punctuation, collapse_phrases, **params) for t in text}
+            resp.body = json.dumps(parse, sort_keys=True, indent=2)
             resp.content_type = 'text/string'
             resp.append_header('Access-Control-Allow-Origin', "*")
             resp.status = falcon.HTTP_200

@@ -4,6 +4,22 @@
 
 This repository provides REST microservices for Explosion AI's [interactive demos](https://demos.explosion.ai) and visualisers. All requests and responses are JSON-encoded as `text/string`, so all requests require the header `Content-Type: text/string`.
 
+# Docker Packaging
+
+This fork provides a Dockerfile that brings up a displaCy server (as documented below) using spaCy 1.9.0. To build and run locally,
+
+```docker build -t $YOUR_TAG .```
+
+```docker run -p 8000:8000 $YOUR_TAG```
+
+This will start a displaCy server running on localhost:8000.
+
+#### Running tests
+
+```docker run -p 8000:8000 --rm -it $YOUR_TAG pytest displacy_service/tests```
+
+This will run the displacy service tests defined in this repo
+
 ## [displaCy server](displacy)
 
 A simple [Falcon](https://falconframework.org/) app for exposing a spaCy dependency parser and spaCy named entity recognition model as a REST microservice, formatted for the [displaCy.js](https://github.com/explosion/displacy) and [displaCy ENT](https://github.com/explosion/displacy-ent) visualiser. For more info on the rendering on the front-end that consumes the data produced by this service, see [this blog post](https://explosion.ai/blog/displacy-js-nlp-visualizer).
@@ -14,20 +30,107 @@ The service exposes two endpoints that accept POST requests, and two endpoints t
 
 ### `POST` `/dep/`
 
-Example request:
+`POST` to `/dep/` has been modified to only accept `text` field with a list of texts (with one or more words)
+this is to accomodate 'batching' several thousand texts at once - in the case of a fetch on single words, for example
+
+Additionally - the `POST` command allows the request param `features` - any value of which will filter the resulting `word` serialization to filter for those features
+
+For example:
+
+`curl -s localhost:8000/dep -d '{"text":["human"], "model":"en"}'`
+
+will return:
 
 ```json
 {
-    "text": "They ate the pizza with anchovies",
+  "human": {
+    "arcs": [], //empty, as there is only a single word in this text
+    "words": [  //a single-member list, as this is a single word text - expect this!
+      {
+        "dep": 'ROOT', //root as we're a single word text!
+        "ent_type": ..., //ellipses for lazyness
+        "lemma": ...,
+        "like_email": ...,
+        "like_num": ...,
+        "orth": ...,
+        "pos": ...,
+        "sentiment": ...,
+        "shape": ...,
+        "tag": ...,
+        "text": ...,
+        "vector": [...]
+      }]
+    }
+}
+```
+
+woah! those are a lot of features! we can filter for the features over the wire using a request parameter:
+
+`curl -s localhost:8000/dep?features=vector&features=orth -d '{"text":["human"], "model":"en"}'`
+
+et voila: we only get back the features we want!
+
+```json
+{
+  "human": {
+    "arcs": [], //empty, as there is only a single word in this text
+    "words": [  //a single-member list, as this is a single word text - expect this!
+      {
+        "orth": ...,
+        "vector": [...]
+      }]
+    }
+}
+```
+
+### A fun exercise
+
+```python
+import json, requests, spacy
+
+convenience = lambda x: {'text': x if isinstance(x, list) else [x], 'model': 'en'}
+
+url = "http://localhost:8000/dep"
+
+nlp = spacy.load('en')
+
+madness = [token.text for token in nlp.vocab]
+
+headers = {"content-type": "application/json"}
+params = {"features": ["vector", "orth"]}
+
+response = requests.post(url, data=json.dumps(convenience(madness)), headers=headers, params=params)
+
+# it's true that the unwrapping logic is a little bit messy here.
+# this is because we don't want to stray _too_ far from a general spaCy retval
+# and it's worth noting that between the first and last keys (`human` and `vector` respectively),
+# we are guaranteed to use the same constant keying for the intermediate vals
+response['human']['words'][0]['vector']
+```
+
+Example request:
+
+**note:** I didn't update the responses, sorry!
+
+```json
+{
+    "text": ["They ate the pizza with anchovies"],
     "model":"en",
     "collapse_punctuation": 0,
     "collapse_phrases": 1
 }
 ```
 
+```json
+{
+    "text": ["human", "balance", "machine", "they ate the pizza with anchovies"],
+    "model": "en"
+}
+```
+
 | Name | Type | Description |
 | --- | --- | --- |
-| `text` | string | text to be parsed |
+| `text` | list[string] | each list member should be a complete text to be parsed |
 | `model` | string | identifier string for a model installed on the server |
 | `collapse_punctuation` | boolean | Merge punctuation onto the preceding token? |
 | `collapse_phrases` | boolean | Merge noun chunks and named entities into single tokens? |  
@@ -40,7 +143,7 @@ import json
 import requests
 
 url = "http://localhost:8000/dep"
-message_text = "They ate the pizza with anchovies"
+message_text = ["They ate the pizza with anchovies"]
 headers = {'content-type': 'application/json'}
 d = {'text': message_text, 'model': 'en'}
 
@@ -51,7 +154,7 @@ r = response.json()
 Example response:
 
 ```json
-{
+{"They ate the pizza with anchovies": {
     "arcs": [
         { "dir": "left", "start": 0, "end": 1, "label": "nsubj" },
         { "dir": "right", "start": 1, "end": 2, "label": "dobj" },
@@ -65,7 +168,7 @@ Example response:
         { "tag": "NN", "text": "the pizza" },
         { "tag": "IN", "text": "with" },
         { "tag": "NNS", "text": "anchovies" }
-    ]
+    ]}
 }
 ```
 
@@ -85,7 +188,7 @@ Example response:
 Curl command:
 
 ```
-curl -s localhost:8000/dep -d '{"text":"Pastafarians are smarter than people with Coca Cola bottles.", "model":"en"}'
+curl -s localhost:8000/dep -d '{"text":["Pastafarians are smarter than people with Coca Cola bottles.", "This statement is true: that statement was false"], "model":"en"}'
 ```
 
 ```json
