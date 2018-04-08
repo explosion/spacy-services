@@ -114,3 +114,21 @@ name.
 | `start` | number | Character offset the entity *starts on*. |
 | `end` | number | Character offset the entity *ends after*. |
 | `label` | string | Entity label. |
+
+## Usage Example (JavaScript)
+
+```javascript
+function getEntities(text, model) {
+    const options = {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ text, model })
+    };
+    fetch('/ent', options)
+        .then(res => res.json())
+        .then(entities => {
+            console.log(entities);
+        });
+}
+```

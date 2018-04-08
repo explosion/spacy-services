@@ -209,3 +209,21 @@ Match a pattern and return the matches and tokens.
 | `start` | number | Character offset the match or token *starts on*. |
 | `end` | number | Character offset the match or token *ends after*. |
 | `label` | string | `"MATCH"` for matched span, `"TOKEN"` for token span. |
+
+## Usage Example (JavaScript)
+
+```javascript
+function getMatches(text, model, pattern) {
+    const options = {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ text, model, pattern })
+    };
+    fetch('/match', options)
+        .then(res => res.json())
+        .then(({ tokens, matches }) => {
+            console.log(tokens, matches);
+        });
+}
+```

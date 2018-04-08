@@ -87,3 +87,21 @@ Find similar terms for a given term and optional sense.
 | `results` | list | The most similar terms. |
 | `score` | number | The similarity score. |
 | `count` | number | The total frequency count. |
+
+## Usage Example (JavaScript)
+
+```javascript
+function findSimilar(word, sense = 'auto') {
+    const options = {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ word, sense })
+    };
+    fetch('/find', options)
+        .then(res => res.json())
+        .then(({ results }) => {
+            console.log(results);
+        });
+}
+```
