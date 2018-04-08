@@ -1,4 +1,12 @@
-falcon
-spacy-nightly==2.0.0rc2
-pytest
-gunicorn
+hug>=2.4.0,<3.0.0
+hug-middleware-cors>=1.0.0,<2.0.0
+spacy>=2.0.10,<2.1.0
+waitress>=1.0.2,<2.0.0
+
+https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.0.0/en_core_web_sm-2.0.0.tar.gz#egg=en_core_web_sm==2.0.0
+https://github.com/explosion/spacy-models/releases/download/de_core_news_sm-2.0.0/de_core_news_sm-2.0.0.tar.gz#egg=de_core_news_sm==2.0.0
+https://github.com/explosion/spacy-models/releases/download/es_core_news_sm-2.0.0/es_core_news_sm-2.0.0.tar.gz#egg=es_core_news_sm==2.0.0
+https://github.com/explosion/spacy-models/releases/download/pt_core_news_sm-2.0.0/pt_core_news_sm-2.0.0.tar.gz#egg=pt_core_news_sm==2.0.0
+https://github.com/explosion/spacy-models/releases/download/fr_core_news_sm-2.0.0/fr_core_news_sm-2.0.0.tar.gz#egg=fr_core_news_sm==2.0.0
+https://github.com/explosion/spacy-models/releases/download/it_core_news_sm-2.0.0/it_core_news_sm-2.0.0.tar.gz#egg=it_core_news_sm==2.0.0
+https://github.com/explosion/spacy-models/releases/download/nl_core_news_sm-2.0.0/nl_core_news_sm-2.0.0.tar.gz#egg=nl_core_news_sm==2.0.0
