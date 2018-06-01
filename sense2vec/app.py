@@ -55,13 +55,11 @@ def get_best(word, sense):
         return (None, None)
     freqs = []
     casings = [word, word.upper(), word.title()] if word.islower() else [word]
-    print(casings)
     for text in casings:  # try options
         for tag in SENSES:
             query = format_for_s2v(text, tag)
             if query in S2V:
                 freqs.append((S2V[query][0], (text, tag)))
-    print(freqs)
     return max(freqs)[1] if freqs else (None, None)
 
 
