@@ -13,8 +13,10 @@ SENSES = ['auto', 'ADJ', 'ADP', 'ADV', 'AUX', 'CONJ', 'DET', 'INTJ', 'NOUN',
           'EVENT', 'WORK_OF_ART', 'LANGUAGE']
 
 
+print("Loading")
 LEMMATIZER = English().vocab.morphology.lemmatizer
 S2V = sense2vec.load('reddit_vectors-1.1.0')
+print("Loaded!")
 
 
 @hug.get('/senses')
@@ -72,6 +74,8 @@ def get_similar(word, sense, n=100):
     freq, query_vector = S2V[query]
     words, scores = S2V.most_similar(query_vector, n)
     words = [word.rsplit('|', 1) for word in words]
+    # Don't know why we'd be getting unsensed entries, but fix.
+    words = [entry for entry in words if len(entry) == 2]
     words = [(word.replace('_', ' '), sense) for word, sense in words]
     return zip(words, scores)
 
