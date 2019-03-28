@@ -55,6 +55,16 @@ def ent(text: str, model: str):
             for ent in doc.ents]
 
 
+@hug.post('/sents')
+def sents(text: str, model: str):
+    """Get sentences from text by sentence segmentation."""
+    nlp = MODELS[model]
+    doc = nlp(text)
+
+    return [sent.text
+            for sent in doc.sents]
+
+
 if __name__ == '__main__':
     import waitress
     app = hug.API(__name__)
