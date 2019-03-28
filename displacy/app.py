@@ -42,7 +42,10 @@ def dep(
     """Get dependencies for displaCy visualizer."""
     nlp = MODELS[model]
     doc = nlp(text)
-    options = {"collapse_punct": collapse_punctuation, "collapse_phrases": collapse_phrases}
+    options = {
+        "collapse_punct": collapse_punctuation,
+        "collapse_phrases": collapse_phrases,
+    }
     return spacy.displacy.parse_deps(doc, options)
 
 
