@@ -42,10 +42,7 @@ def dep(
     """Get dependencies for displaCy visualizer."""
     nlp = MODELS[model]
     doc = nlp(text)
-    if collapse_phrases:
-        for np in list(doc.noun_chunks):
-            np.merge(tag=np.root.tag_, lemma=np.root.lemma_, ent_type=np.root.ent_type_)
-    options = {"collapse_punct": collapse_punctuation}
+    options = {"collapse_punct": collapse_punctuation, "collapse_phrases": collapse_phrases}
     return spacy.displacy.parse_deps(doc, options)
 
 
