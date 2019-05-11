@@ -1,5 +1,5 @@
 spacy>=2.0.10,<2.1.0
 sense2vec>=1.0.0a0,<1.1.0
-hug>=2.4.0,<3.0.0
+hug==2.4.8
 hug-middleware-cors>=1.0.0,<2.0.0
 waitress>=1.0.2,<2.0.0
