@@ -90,7 +90,7 @@ name.
 ```json
 {
     "text": "When Sebastian Thrun started working on self-driving cars at Google in 2007, few people outside of the company took him seriously.",
-    "model": "en"
+    "model": "en_core_web_sm"
 }
 ```
 
