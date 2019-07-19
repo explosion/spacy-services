@@ -5,17 +5,11 @@ import hug
 from hug_middleware_cors import CORSMiddleware
 import spacy
 
+from displacy.mercury_english_query import en_parse_deps
+
 
 MODELS = {
     "en_core_web_sm": spacy.load("en_core_web_sm"),
-    "en_core_web_md": spacy.load("en_core_web_md"),
-    "en_core_web_lg": spacy.load("en_core_web_lg"),
-    "de_core_news_sm": spacy.load("de_core_news_sm"),
-    "es_core_news_sm": spacy.load("es_core_news_sm"),
-    "pt_core_news_sm": spacy.load("pt_core_news_sm"),
-    "fr_core_news_sm": spacy.load("fr_core_news_sm"),
-    "it_core_news_sm": spacy.load("it_core_news_sm"),
-    "nl_core_news_sm": spacy.load("nl_core_news_sm"),
 }
 
 
@@ -46,6 +40,10 @@ def dep(
         "collapse_punct": collapse_punctuation,
         "collapse_phrases": collapse_phrases,
     }
+
+    if model.startswith("en_"):
+        return en_parse_deps(doc, options)
+
     return spacy.displacy.parse_deps(doc, options)
 
 
