@@ -10,7 +10,6 @@ JA_MODEL = "ja"
 
 MODELS = {
     "en_core_web_sm": spacy.load("en_core_web_sm"),
-    "en_core_web_md": spacy.load("en_core_web_md"),
     JA_MODEL:spacy.load("ja_ginza")
 }
 
