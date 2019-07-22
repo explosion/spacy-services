@@ -220,7 +220,27 @@ class TestJaTextAnalysis(unittest.TestCase):
 
     def test_summary_ja_text_2(self):
 
-        text ="これはとても素敵なビーチです"
+        text ="横浜でレストランを探しています"
+        nlp = spacy.load("ja_ginza")
+        doc = nlp(text)
+        options = {
+            "collapse_punct": True,
+            "collapse_phrases": True,
+            "summary": True,
+        }
+        parser_result = parse_deps(doc, options)
+        words = []
+        tags = []
+        [words.append(token["text"]) or tags.append(token["tag"]) for token in parser_result["words"]]
+
+        expect_tags = ['NOUN', 'ADP', 'PROPN']
+        expect_words = ['レストラン', 'で', '横浜']
+
+        self.assertEqual(tags, expect_tags)
+        self.assertEqual(words, expect_words)
+    def test_summary_ja_text_3(self):
+
+        text ="アジアの美しいテンプレートとは"
         nlp = spacy.load("ja_ginza")
         doc = nlp(text)
         options = {
@@ -233,9 +253,8 @@ class TestJaTextAnalysis(unittest.TestCase):
         tags = []
         [words.append(token["text"]) or tags.append(token["tag"]) for token in parser_result["words"]]
 
-        expect_tags = ['ADV', 'ADJ', 'NOUN']
-        expect_words =['迚も', '素敵', 'ビーチ']
+        expect_tags = ['ADJ', 'NOUN', 'ADP', 'PROPN']
+        expect_words = ['美しい', 'テンプレート', 'の', 'アジア']
 
         self.assertEqual(tags, expect_tags)
         self.assertEqual(words, expect_words)
-

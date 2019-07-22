@@ -228,10 +228,10 @@ def summary_ja_doc(doc):
     doc = doc.doc
     start = 0
     end = len(doc)
-    while doc[start].pos not in MEANING_POS_IDS and start != end:
+    while doc[start].pos not in KEEP_POS_IDS and start != end:
         start += 1
 
-    while (doc[end - 1].pos not in MEANING_POS_IDS or doc[end - 1].lemma_ in REMOVE_VERB or doc[end - 1].lemma_ in REMOVE_ADJ)\
+    while (doc[end - 1].pos not in KEEP_POS_IDS or doc[end - 1].lemma_ in REMOVE_VERB or doc[end - 1].lemma_ in REMOVE_ADJ)\
             and start != end:
         end -= 1
     if start == end:
