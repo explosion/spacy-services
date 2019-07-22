@@ -4,18 +4,14 @@ from __future__ import unicode_literals
 import hug
 from hug_middleware_cors import CORSMiddleware
 import spacy
-
+import spacy.displacy
+from ja_text_analyser import analyze_ja_text
+JA_MODEL = "ja"
 
 MODELS = {
     "en_core_web_sm": spacy.load("en_core_web_sm"),
     "en_core_web_md": spacy.load("en_core_web_md"),
-    "en_core_web_lg": spacy.load("en_core_web_lg"),
-    "de_core_news_sm": spacy.load("de_core_news_sm"),
-    "es_core_news_sm": spacy.load("es_core_news_sm"),
-    "pt_core_news_sm": spacy.load("pt_core_news_sm"),
-    "fr_core_news_sm": spacy.load("fr_core_news_sm"),
-    "it_core_news_sm": spacy.load("it_core_news_sm"),
-    "nl_core_news_sm": spacy.load("nl_core_news_sm"),
+    JA_MODEL:spacy.load("ja_ginza"),
 }
 
 
@@ -40,13 +36,17 @@ def dep(
     collapse_phrases: bool = False,
 ):
     """Get dependencies for displaCy visualizer."""
-    nlp = MODELS[model]
-    doc = nlp(text)
     options = {
         "collapse_punct": collapse_punctuation,
         "collapse_phrases": collapse_phrases,
     }
-    return spacy.displacy.parse_deps(doc, options)
+    options["summary"] = True,
+    nlp = MODELS[model]
+    doc = nlp(text)
+    if model != JA_MODEL:
+        return spacy.displacy.parse_deps(doc, options)
+    else:
+        return analyze_ja_text.parse_deps(doc, options)
 
 
 @hug.post("/ent")
@@ -65,4 +65,4 @@ if __name__ == "__main__":
 
     app = hug.API(__name__)
     app.http.add_middleware(CORSMiddleware(app))
-    waitress.serve(__hug_wsgi__, port=8080)
+    waitress.serve(__hug_wsgi__, port=8082)
