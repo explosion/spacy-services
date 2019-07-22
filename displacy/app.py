@@ -45,9 +45,8 @@ def dep(
     if model.startswith("en_"):
         return en_parse_deps(doc, options)
     elif model == JA_MODEL:
-        return spacy.displacy.parse_deps(doc, options)
-
-    return analyze_ja_text.parse_deps(doc, options)
+        return analyze_ja_text.parse_deps(doc, options)
+    return spacy.displacy.parse_deps(doc, options)
 
 
 @hug.post("/ent")
