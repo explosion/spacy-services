@@ -39,6 +39,10 @@ def dep(
         "collapse_punct": collapse_punctuation,
         "collapse_phrases": collapse_phrases,
     }
+
+    if len(text.strip()) == 0:
+        return {"words": [], "arcs": [], "settings": {}}
+
     nlp = MODELS[model]
     doc = nlp(text)
 
