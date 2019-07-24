@@ -1,5 +1,4 @@
 from ja_text_analyser.analyze_ja_text import *
-from ja_text_analyser.utils import VERB_CHUNK_PATTERN
 import jaconv
 import unittest
 import spacy
@@ -14,7 +13,7 @@ class TestJaTextAnalysis(unittest.TestCase):
         nlp =spacy.load("ja_ginza")
         doc = nlp(text)
         chunks = []
-        for chunk_doc, _ in ja_pos_regex_matches(doc, pattern=CHUNKS_PATTERN):
+        for chunk_doc, _ in ja_pos_regex_matches(doc, compiled=COMPILED_CHUNKS_PATTERN):
             chunks.append(chunk_doc.text)
         expect = ['アジア', 'の', 'バー・パブ・クラブショップ']
         self.assertEqual(chunks, expect)
@@ -26,7 +25,7 @@ class TestJaTextAnalysis(unittest.TestCase):
         nlp =spacy.load("ja_ginza")
         doc = nlp(text)
         chunks = []
-        for chunk_doc,_ in ja_pos_regex_matches(doc, pattern=CHUNKS_PATTERN):
+        for chunk_doc,_ in ja_pos_regex_matches(doc, compiled=COMPILED_CHUNKS_PATTERN):
             chunks.append(chunk_doc.text)
         expect = ['東南アジア', 'の', 'とても素敵なビーチ']
         self.assertEqual(chunks, expect)
@@ -37,7 +36,7 @@ class TestJaTextAnalysis(unittest.TestCase):
         nlp =spacy.load("ja_ginza")
         doc = nlp(text)
         chunks = []
-        for chunk_doc,_ in ja_pos_regex_matches(doc, pattern=CHUNKS_PATTERN):
+        for chunk_doc,_ in ja_pos_regex_matches(doc, compiled=COMPILED_CHUNKS_PATTERN):
             chunks.append(chunk_doc.text)
         expect = ['豪華で美しいホテル']
         self.assertEqual(chunks, expect)
@@ -49,7 +48,7 @@ class TestJaTextAnalysis(unittest.TestCase):
         nlp =spacy.load("ja_ginza")
         doc = nlp(text)
         chunks = []
-        for chunk_doc,_ in ja_pos_regex_matches(doc, pattern=CHUNKS_PATTERN):
+        for chunk_doc,_ in ja_pos_regex_matches(doc, compiled=COMPILED_CHUNKS_PATTERN):
             chunks.append(chunk_doc.text)
         expect = ['1月', 'の', '東京']
         self.assertEqual(chunks, expect)
@@ -61,7 +60,7 @@ class TestJaTextAnalysis(unittest.TestCase):
         nlp =spacy.load("ja_ginza")
         doc = nlp(text)
         chunks = []
-        for chunk_doc,_ in ja_pos_regex_matches(doc, pattern=CHUNKS_PATTERN):
+        for chunk_doc,_ in ja_pos_regex_matches(doc, compiled=COMPILED_CHUNKS_PATTERN):
             chunks.append(chunk_doc.text)
         expect = ['豪華だ', 'が', '美しいホテル']
         self.assertEqual(chunks, expect)
@@ -73,9 +72,9 @@ class TestJaTextAnalysis(unittest.TestCase):
         nlp =spacy.load("ja_ginza")
         doc = nlp(text)
         chunks = []
-        for chunk_doc,_ in ja_pos_regex_matches(doc, pattern=VERB_CHUNK_PATTERN):
+        for chunk_doc,_ in ja_pos_regex_matches(doc, compiled=COMPILED_CHUNKS_PATTERN):
             chunks.append(chunk_doc.text)
-        expect = ["注意深く読んだ"]
+        expect = ['彼', 'は', 'この本', 'を', '注意深く読んだ']
         self.assertEqual(chunks, expect)
 
     def test_run_analysis(self):
@@ -83,42 +82,44 @@ class TestJaTextAnalysis(unittest.TestCase):
         text = "1月の東京,彼はこの本を注意深く読んだ"
         nlp =spacy.load("ja_ginza")
         doc = nlp(text)
-        chunks_tokens = run_analysis(doc)
-        chunk_pos = [chunk["pos"] for chunk in chunks_tokens["chunks"]]
+        tokens = run_analysis(doc, collapse_phrases=True)
+        tok_pos = [tok["pos"] for tok in tokens]
         expect_chunk_pos = ['NOUN', 'ADP', 'PROPN', 'PUNCT', 'PRON', 'ADP', 'NOUN', 'ADP', 'VERB']
 
-        self.assertEqual(chunk_pos, expect_chunk_pos)
+        self.assertEqual(tok_pos, expect_chunk_pos)
 
     def test_run_analysis_2(self):
 
         text = "ダナンの海と山"
         nlp =spacy.load("ja_ginza")
         doc = nlp(text)
-        chunks_tokens = run_analysis(doc)
-        chunk_pos = [chunk["pos"] for chunk in chunks_tokens["chunks"]]
-        expect_chunk_pos = ['PROPN', 'ADP', 'NOUN', 'CCONJ', 'NOUN']
-        self.assertEqual(chunk_pos, expect_chunk_pos)
+        tokens = run_analysis(doc, collapse_phrases=True)
+        tokens = convert2EN(tokens)
+        tok_pos = [tok["pos"] for tok in tokens]
+        expect_chunk_pos = ['NOUN', 'CCONJ', 'NOUN', 'ADP', 'PROPN']
+        self.assertEqual(tok_pos, expect_chunk_pos)
 
     def test_run_analysis_with_object_label(self):
 
         text = "庵美術館"
         nlp =spacy.load("ja_ginza")
         doc = nlp(text)
-        chunks_tokens = run_analysis(doc)
-        chunk_pos = [chunk["pos"] for chunk in chunks_tokens["chunks"]]
+        tokens = run_analysis(doc, collapse_phrases=True)
+        tokens = convert2EN(tokens)
+        tok_pos = [tok["pos"] for tok in tokens]
         expect_chunk_pos = ['NOUN']
-        self.assertEqual(chunk_pos, expect_chunk_pos)
+        self.assertEqual(tok_pos, expect_chunk_pos)
 
     def test_convert2EN(self):
 
         text = "ダナンの海と山"
         nlp =spacy.load("ja_ginza")
         doc = nlp(text)
-        chunks_tokens = run_analysis(doc)
-        en_chunks_tokens = convert2EN(chunks_tokens)
-        chunk_pos = [chunk["pos"] for chunk in en_chunks_tokens["chunks"]]
+        tokens = run_analysis(doc, collapse_phrases=True)
+        tokens = convert2EN(tokens)
+        tok_pos = [tok["pos"] for tok in tokens]
         expect_chunk_pos = ['NOUN', 'CCONJ', 'NOUN', 'ADP', 'PROPN']
-        self.assertEqual(chunk_pos, expect_chunk_pos)
+        self.assertEqual(tok_pos, expect_chunk_pos)
 
     def test_parser_deps(self):
 
@@ -131,7 +132,7 @@ class TestJaTextAnalysis(unittest.TestCase):
         tags = []
         [words.append(token["text"]) or tags.append(token["tag"]) for token in parser_result["words"]]
         expect_tags = ['NOUN', 'CCONJ', 'NOUN', 'ADP', 'PROPN']
-        expect_words = ['海', 'と', '山', 'の', 'ダナン']
+        expect_words = ['山', 'と', '海', 'の', 'ダナン']
 
         self.assertEqual(tags, expect_tags)
         self.assertEqual(words, expect_words)
@@ -238,6 +239,7 @@ class TestJaTextAnalysis(unittest.TestCase):
 
         self.assertEqual(tags, expect_tags)
         self.assertEqual(words, expect_words)
+
     def test_summary_ja_text_3(self):
 
         text ="アジアの美しいテンプレートとは"
@@ -255,6 +257,27 @@ class TestJaTextAnalysis(unittest.TestCase):
 
         expect_tags = ['ADJ', 'NOUN', 'ADP', 'PROPN']
         expect_words = ['美しい', 'テンプレート', 'の', 'アジア']
+
+        self.assertEqual(tags, expect_tags)
+        self.assertEqual(words, expect_words)
+
+    def test_collapse_adp(self):
+        text = "私はヨーロッパでのナイトライフを楽しみます"
+        nlp = spacy.load("ja_ginza")
+        doc = nlp(text)
+        options = {
+            "collapse_punct": False,
+            "collapse_phrases": False,
+            "summary": True,
+            "collapse_adp": True,
+        }
+        parser_result = parse_deps(doc, options)
+        words = []
+        tags = []
+        [words.append(token["text"]) or tags.append(token["tag"]) for token in parser_result["words"]]
+
+        expect_tags = ['NOUN', 'ADP', 'PROPN']
+        expect_words = ['ナイトライフ', 'での', 'ヨーロッパ']
 
         self.assertEqual(tags, expect_tags)
         self.assertEqual(words, expect_words)
