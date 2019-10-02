@@ -6,17 +6,24 @@ from hug_middleware_cors import CORSMiddleware
 import spacy
 
 
+print("Loading...")
 MODELS = {
     'en_core_web_sm': spacy.load('en_core_web_sm'),
     'en_core_web_md': spacy.load('en_core_web_md'),
     'en_core_web_lg': spacy.load('en_core_web_lg'),
     'de_core_news_sm': spacy.load('de_core_news_sm'),
+    'de_core_news_md': spacy.load('de_core_news_md'),
     'es_core_news_sm': spacy.load('es_core_news_sm'),
+    'es_core_news_md': spacy.load('es_core_news_md'),
     'pt_core_news_sm': spacy.load('pt_core_news_sm'),
     'fr_core_news_sm': spacy.load('fr_core_news_sm'),
+    'fr_core_news_md': spacy.load('fr_core_news_md'),
     'it_core_news_sm': spacy.load('it_core_news_sm'),
-    'nl_core_news_sm': spacy.load('nl_core_news_sm')
+    'nl_core_news_sm': spacy.load('nl_core_news_sm'),
+    'el_core_news_sm': spacy.load('el_core_news_sm'),
+    'el_core_news_md': spacy.load('el_core_news_md'),
 }
+print("Loaded!")
 
 
 def get_model_desc(nlp, model_name):
