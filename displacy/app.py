@@ -16,6 +16,8 @@ MODELS = {
     "fr_core_news_sm": spacy.load("fr_core_news_sm"),
     "it_core_news_sm": spacy.load("it_core_news_sm"),
     "nl_core_news_sm": spacy.load("nl_core_news_sm"),
+    "nb_core_news_sm": spacy.load("nb_core_news_sm"),
+    "lt_core_news_sm": spacy.load("lt_core_news_sm"),
 }
 
 
@@ -29,7 +31,10 @@ def get_model_desc(nlp, model_name):
 
 @hug.get("/models")
 def models():
-    return {name: get_model_desc(nlp, name) for name, nlp in MODELS.items()}
+    return {
+        "models": {name: get_model_desc(nlp, name) for name, nlp in MODELS.items()},
+        "labels": {name: nlp.pipe_labels for name, nlp in MODELS.items()},
+    }
 
 
 @hug.post("/dep")
