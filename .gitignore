@@ -1,4 +1,5 @@
 data/
+vectors/
 cythonize.dat
 *.cpp
 .pytest_cache
