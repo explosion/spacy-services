@@ -5,6 +5,10 @@ from pydantic import BaseModel
 from spacy.lang.en import English
 from sense2vec import Sense2Vec
 
+MODEL_PATHS = {
+    "2015": "./vectors/s2v_reddit_2015_md",
+    "2019": "./vectors/s2v_reddit_2019_lg",
+}
 # fmt: off
 SENSES = ["auto", "ADJ", "ADP", "ADV", "AUX", "CONJ", "DET", "INTJ", "NOUN",
           "NUM", "PART", "PERSON", "PRON", "PROPN", "PUNCT", "SCONJ", "SYM",
@@ -29,12 +33,14 @@ class Query(BaseModel):
     n_results: int = 200
 
 
-print("Loading vectors...")
+print(f"Loading {len(MODEL_PATHS)} vector models...")
 LEMMATIZER = English().vocab.morphology.lemmatizer
-MODELS = {
-    "2015": Sense2Vec().from_disk("./vectors/s2v_reddit_2015_md"),
-    "2019": Sense2Vec().from_disk("./vectors/s2v_reddit_2019_lg"),
-}
+MODELS = {}
+for name, path in MODEL_PATHS.items():
+    print(f"Loading vectors '{name}'...")
+    s2v = Sense2Vec().from_disk(path)
+    MODELS[name] = s2v
+    print(f"Loaded vectors '{name}'.")
 print(f"Loaded {len(MODELS)} vector models.")
 
 
