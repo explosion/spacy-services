@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 import uvicorn
-from starlette.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from spacy.lang.en import English
 from sense2vec import Sense2Vec
@@ -17,13 +16,6 @@ SENSES = ["auto", "ADJ", "ADP", "ADV", "AUX", "CONJ", "DET", "INTJ", "NOUN",
 # fmt: on
 
 app = FastAPI()
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["GET", "POST"],
-    allow_headers=["*"],
-    allow_credentials=True,
-)
 
 
 class Query(BaseModel):
