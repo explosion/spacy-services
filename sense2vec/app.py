@@ -24,7 +24,7 @@ class Query(BaseModel):
     word: str
     sense: str = "auto"
     model: str = "2015"
-    n_results: int = 200
+    n_results: int = 100
 
 
 print(f"Loading {len(MODEL_PATHS)} vector models...")
