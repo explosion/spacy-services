@@ -3,10 +3,12 @@ import uvicorn
 from pydantic import BaseModel
 from spacy.lang.en import English
 from sense2vec import Sense2Vec
+from pathlib import Path
 
+ROOT = Path(__file__).parent / "vectors"
 MODEL_PATHS = {
-    "2015": "./vectors/s2v_reddit_2015_md",
-    "2019": "./vectors/s2v_reddit_2019_lg",
+    "2015": ROOT / "s2v_reddit_2015_md",
+    "2019": ROOT / "s2v_reddit_2019_lg",
 }
 # fmt: off
 SENSES = ["auto", "ADJ", "ADP", "ADV", "AUX", "CONJ", "DET", "INTJ", "NOUN",
