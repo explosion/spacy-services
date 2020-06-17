@@ -12,14 +12,17 @@ MODELS = {
     "en_core_web_md": spacy.load("en_core_web_md"),
     "en_core_web_lg": spacy.load("en_core_web_lg"),
     "de_core_news_sm": spacy.load("de_core_news_sm"),
+    'el_core_news_sm': spacy.load('el_core_news_sm'),
     "es_core_news_sm": spacy.load("es_core_news_sm"),
-    "pt_core_news_sm": spacy.load("pt_core_news_sm"),
     "fr_core_news_sm": spacy.load("fr_core_news_sm"),
     "it_core_news_sm": spacy.load("it_core_news_sm"),
-    "nl_core_news_sm": spacy.load("nl_core_news_sm"),
-    "nb_core_news_sm": spacy.load("nb_core_news_sm"),
+    "ja_core_news_sm": spacy.load("ja_core_news_sm"),
     "lt_core_news_sm": spacy.load("lt_core_news_sm"),
-    'el_core_news_sm': spacy.load('el_core_news_sm'),
+    "nb_core_news_sm": spacy.load("nb_core_news_sm"),
+    "nl_core_news_sm": spacy.load("nl_core_news_sm"),
+    "pt_core_news_sm": spacy.load("pt_core_news_sm"),
+    "ro_core_news_sm": spacy.load("ro_core_news_sm"),
+    "zh_core_news_sm": spacy.load("zh_core_news_sm"),
 }
 print("Loaded!")
 
