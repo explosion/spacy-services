@@ -31,14 +31,6 @@ def get_model_desc(nlp, model_name):
     model_version = nlp.meta["version"]
     return "{} - {} (v{})".format(lang_name, model_name, model_version)
 
-
-@hug.get("/test")
-def test():
-    return {
-        "models": "test",
-        "labels": "test"
-    }
-
 @hug.get("/models")
 def models():
     return {
@@ -67,6 +59,16 @@ def dep(
 @hug.post("/ent")
 def ent(text: str, model: str):
     """Get entities for displaCy ENT visualizer."""
+    nlp = MODELS[model]
+    doc = nlp(text)
+    return [
+        {"start": ent.start_char, "end": ent.end_char, "label": ent.label_}
+        for ent in doc.ents
+    ]
+
+@hug.post("/lemmas")
+def ent(text: str, model: str):
+    """Get lemmas ."""
     nlp = MODELS[model]
     doc = nlp(text)
     return [
