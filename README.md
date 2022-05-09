@@ -1,3 +1,10 @@
+
+# Updates From thomas-hervey
+## Installation
+- dependencies are installed in a pyenv virtualenv called `spacy-js-virtualenv`. Once activated, requirements.txt were installed in that virtualenv
+- Most models in the services are commented out because we are only using English (for now)
+- Updated hug to `hug==2.4.8` in order to prevent server errors (see comment here)[https://github.com/ines/spacy-js/issues/5#issuecomment-703893676]
+---
 <a href="https://explosion.ai"><img src="https://explosion.ai/assets/img/logo.svg" width="125" height="125" align="right" /></a>
 
 # spaCy REST services

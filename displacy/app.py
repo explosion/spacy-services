@@ -9,17 +9,17 @@ import spacy
 print("Loading...")
 MODELS = {
     "en_core_web_sm": spacy.load("en_core_web_sm"),
-    "en_core_web_md": spacy.load("en_core_web_md"),
-    "en_core_web_lg": spacy.load("en_core_web_lg"),
-    "de_core_news_sm": spacy.load("de_core_news_sm"),
-    "es_core_news_sm": spacy.load("es_core_news_sm"),
-    "pt_core_news_sm": spacy.load("pt_core_news_sm"),
-    "fr_core_news_sm": spacy.load("fr_core_news_sm"),
-    "it_core_news_sm": spacy.load("it_core_news_sm"),
-    "nl_core_news_sm": spacy.load("nl_core_news_sm"),
-    "nb_core_news_sm": spacy.load("nb_core_news_sm"),
-    "lt_core_news_sm": spacy.load("lt_core_news_sm"),
-    'el_core_news_sm': spacy.load('el_core_news_sm'),
+    # "en_core_web_md": spacy.load("en_core_web_md"),
+    # "en_core_web_lg": spacy.load("en_core_web_lg"),
+    # "de_core_news_sm": spacy.load("de_core_news_sm"),
+    # "es_core_news_sm": spacy.load("es_core_news_sm"),
+    # "pt_core_news_sm": spacy.load("pt_core_news_sm"),
+    # "fr_core_news_sm": spacy.load("fr_core_news_sm"),
+    # "it_core_news_sm": spacy.load("it_core_news_sm"),
+    # "nl_core_news_sm": spacy.load("nl_core_news_sm"),
+    # "nb_core_news_sm": spacy.load("nb_core_news_sm"),
+    # "lt_core_news_sm": spacy.load("lt_core_news_sm"),
+    # 'el_core_news_sm': spacy.load('el_core_news_sm'),
 }
 print("Loaded!")
 
@@ -31,6 +31,13 @@ def get_model_desc(nlp, model_name):
     model_version = nlp.meta["version"]
     return "{} - {} (v{})".format(lang_name, model_name, model_version)
 
+
+@hug.get("/test")
+def test():
+    return {
+        "models": "test",
+        "labels": "test"
+    }
 
 @hug.get("/models")
 def models():
