@@ -31,6 +31,7 @@ def get_model_desc(nlp, model_name):
     model_version = nlp.meta["version"]
     return "{} - {} (v{})".format(lang_name, model_name, model_version)
 
+
 @hug.get("/models")
 def models():
     return {
@@ -66,14 +67,34 @@ def ent(text: str, model: str):
         for ent in doc.ents
     ]
 
-@hug.post("/lemmas")
-def ent(text: str, model: str):
-    """Get lemmas ."""
+
+@hug.post("/tags")
+def tags(
+    text: str,
+    model: str,
+    collapse_punctuation: bool = False,
+    collapse_phrases: bool = False,
+):
+    """Get all tags."""
     nlp = MODELS[model]
     doc = nlp(text)
+    options = {
+        "collapse_punct": collapse_punctuation,
+        "collapse_phrases": collapse_phrases,
+    }
+
     return [
-        {"start": ent.start_char, "end": ent.end_char, "label": ent.label_}
-        for ent in doc.ents
+        {
+            "text": token.text,
+            "lemma": token.lemma_,
+            "pos": token.pos_,
+            "tag": token.tag_,
+            "dep": token.dep_,
+            "shape": token.shape_,
+            "is_alpha": token.is_alpha,
+            "is_stop": token.is_stop
+        }
+        for token in doc
     ]
 
 
