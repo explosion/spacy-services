@@ -68,36 +68,6 @@ def ent(text: str, model: str):
     ]
 
 
-@hug.post("/tags")
-def tags(
-    text: str,
-    model: str,
-    collapse_punctuation: bool = False,
-    collapse_phrases: bool = False,
-):
-    """Get all tags."""
-    nlp = MODELS[model]
-    doc = nlp(text)
-    options = {
-        "collapse_punct": collapse_punctuation,
-        "collapse_phrases": collapse_phrases,
-    }
-
-    return [
-        {
-            "text": token.text,
-            "lemma": token.lemma_,
-            "pos": token.pos_,
-            "tag": token.tag_,
-            "dep": token.dep_,
-            "shape": token.shape_,
-            "is_alpha": token.is_alpha,
-            "is_stop": token.is_stop
-        }
-        for token in doc
-    ]
-
-
 if __name__ == "__main__":
     import waitress
 
