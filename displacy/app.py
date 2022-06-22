@@ -7,7 +7,7 @@ import spacy
 
 
 print("Loading...")
-MODELS = {
+models = {
     "en_core_web_sm": spacy.load("en_core_web_sm"),
     "en_core_web_md": spacy.load("en_core_web_md"),
     "en_core_web_lg": spacy.load("en_core_web_lg"),
@@ -19,8 +19,17 @@ MODELS = {
     "nl_core_news_sm": spacy.load("nl_core_news_sm"),
     "nb_core_news_sm": spacy.load("nb_core_news_sm"),
     "lt_core_news_sm": spacy.load("lt_core_news_sm"),
-    'el_core_news_sm': spacy.load('el_core_news_sm'),
+    "el_core_news_sm": spacy.load("el_core_news_sm"),
 }
+
+MODELS = {}
+for name, model in models.items():
+    if model.vocab.get_noun_chunks is None:
+        # Set a dummy function here, because displaCy expects
+        # to call noun_chunks for collapse_phrases
+        model.vocab.get_noun_chunks = lambda doc: []
+    MODELS[name] = model
+
 print("Loaded!")
 
 
