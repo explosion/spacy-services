@@ -27,6 +27,7 @@ for name, model in models.items():
     if model.vocab.get_noun_chunks is None:
         # Set a dummy function here, because displaCy expects
         # to call noun_chunks for collapse_phrases
+        print(f"Setting a dummy function for {name}")
         model.vocab.get_noun_chunks = lambda doc: []
     MODELS[name] = model
 
